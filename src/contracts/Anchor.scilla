@@ -1,16 +1,14 @@
-(* A two-part timekeeper contract containing... *)
-(*  - A Merkle Root store for A remote calendar server *)
-(*  - A validated store of the latest NIST randomness beacon (future) *)
+(* A simple anchor contract for Zilliqa emulating Bitcoin's OP_Return *)
+(*  - A Merkle Root store for A remote tree server *)
 
 (* @note: Owner cannot be changed, but delegated responsibilities are updatable. *)
-(* Responsibilities: Chronos (randomness oracle) and Kairos (timestamp calendar anchor) *)
 scilla_version 0
 
 
 (***************************************************)
 (*               Associated library                *)
 (***************************************************)
-library TimeStore
+library Anchor
 
 let one_msg =
   fun (msg: Message) =>
@@ -25,16 +23,13 @@ let code_invalid_params = Uint32 3
 (***************************************************)
 (*             The contract definition             *)
 (***************************************************)
-contract TimeStore
-(owner: ByStr20,
-chronos: ByStr20,
-kairos: ByStr20)
+contract Anchor
+(owner: ByStr20)
+
 
 (*Store of Data Timestamp's merkle root*)
-field latestMerkleRoot: String = ""
+field latestMerkleRoot: String = "NIL"
 
-(*Store of NIST's latest randomness*)
-field latestNISTRandom: String = ""
 
 
 (* @notice: Allows a `_sender` to update the merkle root from a remote Calendar server *)
@@ -43,7 +38,7 @@ field latestNISTRandom: String = ""
 transition updateRoot(new_root: String)
    
     (* Access Control  *)
-    permitted = builtin eq _sender kairos;
+    permitted = builtin eq _sender owner;
     
     match permitted with
     | False =>
@@ -69,39 +64,5 @@ transition updateRoot(new_root: String)
 
 end
 
-
-
-
-(* @notice: Allows a `_sender` to update the NIST randomness string *)
-(* @dev   : Access controls are simply if _sender is the authorized server key *)
-
-transition updateRandom(new_random: String)
-   
-    (* Access Control  *)
-    permitted = builtin eq _sender chronos;
-    match permitted with
-    | False =>
-        (* the attempt to update the random beacon was rejected *)
-        msg = {_tag: ""; 
-                _recipient: _sender; 
-                _amount: Uint128 0; 
-                code: code_not_authorized};
-        msgs = one_msg msg;
-        send msgs
-    | True =>
-        (* Update the randomness beacon *)
-        (* FUTURE: Require proof from calendar service for trustable oracle *)
-        latestNISTRandom := new_random;
-
-        msg = {_tag: ""; 
-                _recipient: _sender; 
-                _amount: Uint128 0; 
-                code: code_success};
-        msgs = one_msg msg;
-        send msgs
-    end
-
-
-end
 
 

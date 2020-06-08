@@ -1,0 +1,3 @@
+import os
+
+SERVER_ZILLIQA_KEY = os.getenv("SERVER_ZILLIQA_KEY")

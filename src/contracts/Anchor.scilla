@@ -1,0 +1,68 @@
+(* A simple anchor contract for Zilliqa emulating Bitcoin's OP_Return *)
+(*  - A Merkle Root store for A remote tree server *)
+
+(* @note: Owner cannot be changed, but delegated responsibilities are updatable. *)
+scilla_version 0
+
+
+(***************************************************)
+(*               Associated library                *)
+(***************************************************)
+library Anchor
+
+let one_msg =
+  fun (msg: Message) =>
+  let nil_msg = Nil {Message} in
+  Cons {Message} msg nil_msg
+
+(* error codes library *)
+let code_success = Uint32 0
+let code_not_authorized = Uint32 2
+let code_invalid_params = Uint32 3
+
+(***************************************************)
+(*             The contract definition             *)
+(***************************************************)
+contract Anchor
+(owner: ByStr20)
+
+
+(*Store of Data Timestamp's merkle root*)
+field latestMerkleRoot: String = "NIL"
+
+
+
+(* @notice: Allows a `_sender` to update the merkle root from a remote Calendar server *)
+(* @dev   : Access controls are simply if _sender is the set server key *)
+
+transition updateRoot(new_root: String)
+   
+    (* Access Control  *)
+    permitted = builtin eq _sender owner;
+    
+    match permitted with
+    | False =>
+        (* the attempt to update root was rejected *)
+        msg = {_tag: ""; 
+                _recipient: _sender; 
+                _amount: Uint128 0; 
+                code: code_not_authorized};
+        msgs = one_msg msg;
+        send msgs
+    | True =>
+        (* An updated merkle root can be used to upgrade a proof transparently - there is no need to log past roots *)
+        latestMerkleRoot := new_root;
+
+        msg = {_tag: ""; 
+                _recipient: _sender; 
+                _amount: Uint128 0; 
+                code: code_success};
+        msgs = one_msg msg;
+        send msgs
+    end
+
+
+end
+
+
+

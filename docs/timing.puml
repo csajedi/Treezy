@@ -1,0 +1,25 @@
+@startuml
+robust "Zilliqa Blocks" as ZB
+concise "Calendar" as CAL
+concise "Timestamp Client" as TC
+
+ 
+@CAL
+0 is Accepting
++110 is Process
++10 is Accepting
+CAL -> ZB: Anchor
++110 is Process
++10 is Accepting
+CAL -> ZB: Anchor
+
+@TC
+0 is Waiting
+TC -> CAL: Submit
++200 is ok
+
+@ZB
+0 is Block1
++120 is Block2
++120 is Block3
+@enduml

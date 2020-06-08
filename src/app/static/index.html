@@ -1,0 +1,117 @@
+<!-- MVP.css quickstart template: https://github.com/andybrewer/mvp/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js" defer></script>
+    <link rel="icon" href="https://via.placeholder.com/70x70">
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+
+    <meta charset="utf-8">
+    <meta name="description" content="My description">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Treezy</title>
+</head>
+
+<body>
+    <header>
+        <h1>Treezy Demo</h1>
+        <br>
+        <p><a href="#about"><i>About</i></a><a href="#submit"><b>submit &rarr;</b></a></p>
+    </header>
+    <main>
+        <hr>
+        <section>
+            <blockquote>
+                "This is the Simplest SideTree protocol variant I have ever created"
+                <footer><i>- Cameron Sajedi, Creator of Treezy</i></footer>
+            </blockquote>
+        </section>
+        <hr>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Digest</th>
+                        <th>File Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>Row 1</td>
+                    <td>Cell A1</td>
+                    <td>Cell B1</td>
+                </tr>
+                <tr>
+                    <td>Row 2</td>
+                    <td>Cell A2</td>
+                    <td>Cell B2</td>
+                </tr>
+            </table>
+        </section>
+        <hr>
+        <article id="about">
+            <h2>How It Works</h2>
+            <p>In order for a client to submit their digest to be anchored on-chain they will complete these steps:</p>
+            <ol>
+                <li>Choose a file from their filesystem</li>
+                <li>Upload that file to their local browser session</li>
+                <li>SHA-256 hash that file</li>
+                <li>Send that hash digest to our API submit endpoint</li>
+                <li>Store the response and poll the server for the anchoring status</li>
+            </ol>
+            <figure>
+                <img alt="Stock photo" src="https://via.placeholder.com/1080x500?text=Amazing+stock+photo">
+                <figcaption><i>Image caption</i></figcaption>
+            </figure>
+            </div>
+            <hr>
+            <section id="submit">
+                <form>
+                    <header>
+                        <h2>Submit a file</h2>
+                    </header>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email" size="30" placeholder="Optional Email">
+                    <label for="select1">Select label:</label>
+                    <input type="file">
+                    <script>
+                        document.querySelector('input').onchange = function () {
+                            var reader = new FileReader()
+                            reader.readAsArrayBuffer(this.files[0])
+                            reader.onload = function () {
+                                crypto.subtle.digest("SHA-256", this.result)
+                                    .then(function (buffer) {
+                                        var hexCodes = []
+                                        var view = new DataView(buffer)
+                                        for (var i = 0; i < view.byteLength; i += 1) {
+                                            var stringValue = view.getUint8(i).toString(16)
+                                            var paddedValue = ('0' + stringValue).slice(-2)
+                                            hexCodes.push(paddedValue)
+                                        }
+                                        alert(hexCodes.join(""))
+                                    })
+                            }
+                        }
+                    </script>
+                    <button type="submit">Submit</button>
+                </form>
+            </section>
+    </main>
+    <footer>
+        <hr>
+        <p>
+            <a href="https://github.com/starling-foundries/Treezy">Fork this project on github </a>
+        </p>
+    </footer>
+
+    <noscript>
+        <h1>Please enable JavaScript. This tool uses 100% free JavaScript. View page source for license and code.</h1>
+        <h2>Version 1.0.0<br>Learn how to verify the integrity and authenticity of this tool at the <a href="https://github.com/starling-foundries/Treezy">Projech Homepage</a>.</h2>
+        <div id="noscript-overlay"></div>
+      </noscript>
+</body>
+
+</html>

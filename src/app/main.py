@@ -7,7 +7,7 @@ from core.tree import *
 from core.errors import *
 
 # JSON-RPC entrypoint
-api_v1 = jsonrpc.Entrypoint('/api/v1/')
+api_v1 = jsonrpc.Entrypoint('/api/v1')
 
 # Server singletons
 merkle_tree = Tree()

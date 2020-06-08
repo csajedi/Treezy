@@ -1,29 +1,51 @@
 """This script has all the essential functions to access the timestamping functions of a Data-Timestamp calendar server."""
 import hashlib
 import requests
+import json
 
-from jsonrpcclient.clients.http_client import HTTPClient
-from jsonrpcclient.requests import Request
+import pymerkle
 
-calendar_server="http://localhost:5000/api/v1/"
+submit_route="http://localhost:5000/api/v1/submit"
+proof_route="http://localhost:5000/api/v1/proof"
+m = hashlib.sha256()
+m.update(b"a random string")
 
-client = HTTPClient(calendar_server)
-d
-submit_request = Request("submit")
-# calendar_server + "submit"
-proof_request = calendar_server + "proof"
-consistency_request = calendar_server + "consistency"
 
-def stamp(digest):
-    response = request(calendar_server, "submit"
+submit_payload = {
+  "jsonrpc": "2.0",
+  "id": 0,
+  "method": "submit",
+  "params": {
+    "checksum": m.hexdigest()
+  }
+}
+
+proof_payload = {
+  "jsonrpc": "2.0",
+  "id": 0,
+  "method": "proof",
+  "params": {
+    "checksum": m.hexdigest()
+  }
+}
     
 
 if __name__ == '__main__':
 
-
-
 # Submits a file by digest to the calendar server for timestamping. Caches the UUID response object to use later for requesting the proof
+    r = requests.post(submit_route, data=json.dumps(submit_payload))
+    print(r.text)
 
 # Gets the Proof based on the UUID response
+    proof_resp = requests.post(proof_route, data=json.dumps(proof_payload))
+    proof_json = json.loads(proof_resp.text)["result"]
+    print(proof_json)
 
-# Requests the corresponding root-update transaction to the viewblock api, validating that your calendar is anchored and your proof will be validated as long as the Zilliqa mainchain is reachable. 
+# Reconstructs the tree from the recieved proof to check it is valid
+print("Validating proof...")
+
+Proof_obj = pymerkle.Proof.deserialize(proof_json)
+if pymerkle.validateProof(Proof_obj):
+    print("Proof is valid given parameters")
+else:
+    print("invalid proof")

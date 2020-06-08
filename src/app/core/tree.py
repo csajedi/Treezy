@@ -52,14 +52,10 @@ class Tree:
         if valid == None:
             raise ChecksumFormatError
 
-        # reject a digest if it already exists 
-        exists = self.merkle.find_index(checksum)
-        if exists:
-            raise ChecksumExistsError
-        else:
-            self.merkle.update(digest=checksum)
-            logger.info("Checksum: {} added to the tree", checksum)
-            return True
+    
+        self.merkle.update(digest=checksum)
+        logger.info("Checksum: {} added to the tree", checksum)
+        return True
 
         return False
 

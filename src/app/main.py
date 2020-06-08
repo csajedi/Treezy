@@ -12,9 +12,6 @@ api_v1 = jsonrpc.Entrypoint('/api/v1/')
 # Server singletons
 merkle_tree = Tree()
 
-#Cache for pending timestamps
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(cache.set('key', 'value'))
 
 # RPC Methods
 

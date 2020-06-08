@@ -12,7 +12,7 @@ class StamperTaskSet(TaskSet):
                 "jsonrpc": "2.0",
                 "id": 0,
                 "method": "submit",
-                "params": {"checksum": "string"},
+                "params": {"checksum": "4eccf34608d31bac5c7becf6006df59005d828181056d092084e341e6bb005bd"},
             }, 
                 catch_response=True
         ) as response:

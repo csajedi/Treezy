@@ -32,7 +32,7 @@ If you have to rebuild the container during development you might find that runn
 
 ## Modifying for your needs
 
-If you wish to use this service in your existing authenticated infrastructure, the easiest way would be to enable the JWT authentication commented out in `main.py`, and adding it as middleware to the endpoints you wish to have authentication guards for. It can be left open access by leaving the JWT commented out.
+If you wish to use this service in your existing authenticated infrastructure, the easiest way would be to enable the API secrets authentication commented out in `main.py`, and adding it as middleware to the endpoints you wish to have authentication guards for. It can be left open access by leaving the code for API secrets commented out.
 
 ## Security
 

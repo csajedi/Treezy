@@ -5,28 +5,36 @@ from loguru import logger
 
 from core.tree import *
 from core.errors import *
+from core.authorizer import *
 
 # JSON-RPC entrypoint
 api_v1 = jsonrpc.Entrypoint('/api/v1')
 
 # Server singletons
 merkle_tree = Tree()
-
+auth = Authorizer()
 
 # RPC Methods
 
-@api_v1.method(errors=[ChecksumFormatError])
-def submit(checksum:str) -> bool:
+@api_v1.method(errors=[ChecksumFormatError, AuthorizationError])
+def submit(api_key:str, checksum:str) -> bool:
     """Expect a bytestring in hexadecimal representing the hash digest of the file you want to timestamp. The response will be a boolean indicating if the submission was accepted by the calendar (but the proof of existence is assumed incomplete). Digests submitted this block are idempotent - meaning that you can only timestamp a file once per block."""
     logger.info("Checksum {} submitted for inclusion", checksum)
-    return merkle_tree.stamp(checksum)
+    if(Authorizer.contains(api_key)):
+        return merkle_tree.stamp(checksum)
+    else:
+         raise AuthorizationError
 
 
-@api_v1.method(errors=[ChecksumFormatError, ChecksumNotFoundError])
-def proof(checksum:str) -> dict:
+@api_v1.method(errors=[ChecksumFormatError, ChecksumNotFoundError, AuthorizationError])
+def proof(api_key: str, checksum:str) -> dict:
     """Expects a bytestring already submitted. The response will be an existing proof upgraded to its latest commitment.Or an error indicating the checksum must be submitted first. This endpoint should be polled by submitters of incomplete timestamps for proofs that include the complete anchor.""" 
     logger.info("Checksum {} submitted for inclusion", checksum)
-    return merkle_tree.proofFor(checksum)
+    if(Authorizer.contains(api_key)):
+        return merkle_tree.proofFor(checksum)
+    else:
+         raise AuthorizationError
+
 
 @api_v1.method()
 def consistency(past_root:str) -> dict:

@@ -5,7 +5,7 @@
 [ ] Scilla Contract - UpdateProof
 [ ] Smart Contract Unit tests
 [ ] Python Reference Client
-
+[ ] Submit should return HTTP status 202: Accepted instead of 201: Created
 
 # Milestones
 ## Implementation of calendar services (1/3)

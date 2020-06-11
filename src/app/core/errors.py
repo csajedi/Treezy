@@ -11,6 +11,11 @@ class ValidationError(jsonrpc.BaseError):
     CODE = 6001
     MESSAGE = "The proof could not be validated"
 
+class AuthorizationError(jsonrpc.BaseError):
+    CODE = 6002
+    MESSAGE = "The provide API key is not valid"
+
+
 
 class ChecksumNotFoundError(jsonrpc.BaseError):
     CODE = 6002

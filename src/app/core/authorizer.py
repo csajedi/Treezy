@@ -3,6 +3,8 @@ from walrus import *
 import hashlib
 import secrets
 
+from .errors import *
+
 class Authorizer:
     """Authorizer class should be treated as a singleton that allows for quick search of a submitted API key's SHA256 hash against the approved list of keys"""
     def __init__(self, db):
@@ -10,16 +12,20 @@ class Authorizer:
 
     def generate_key(self):
         """returns a newly generated API key and adds it to the set of authorized keys"""
-        key = secrets.token_hex(16)
+        key = str.encode(secrets.token_hex(16))
         self.add(key)
         return key
 
 
-    def add(self, api_key):
+    def add(self, api_key=None):
         """add a raw API key to the database, do not add hashed keys here."""
-        hashed_key = hashlib.sha256(api_key)
-        self.store.add(hashed_key)
+        if api_key is None:
+            return AuthorizationError
+        hashed_key = hashlib.sha256(api_key).hexdigest()
+        self.store.add(str.encode(hashed_key))
 
-    def contains(self, api_key):
-        hashed_key = hashlib.sha256(api_key)
-        return self.store.contains(hashed_key)
+    def contains(self, api_key=None):
+        if api_key is None:
+            return AuthorizationError
+        hashed_key = hashlib.sha256(str.encode(api_key)).hexdigest()
+        return hashed_key in self.store

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@zilliqa-js/zilliqa": "^0.10.1",
+    "tslib": "^2.0.0"
+  }
+}

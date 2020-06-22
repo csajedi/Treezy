@@ -19,13 +19,15 @@ let one_msg =
 type Error =
 | CodeNotAuthorized
 | CodeRootRejected
+| CodeAuthorityNotSet
 
 let make_error =
     fun (result : Error) =>
     let result_code = 
         match result with
-        | CodeNotAuthorized  => Int32 -1
-        | CodeRootRejected => Int32 -2
+        | CodeNotAuthorized   => Int32 -1
+        | CodeRootRejected    => Int32 -2
+        | CodeAuthorityNotSet => Int32 -2 
         end
     in
     { _exception : "Error"; code : result_code }
@@ -41,8 +43,8 @@ contract Anchor
 )
 
 
-(*Store of Data Timestamp's merkle root*)
-field latestMerkleRoot : Option ByStr32 = None {ByStr32}
+(*Store of Treezy's merkle root*)
+field latestMerkleRoot : Option String = None {String}
 field authority: Option ByStr20 = None {ByStr20}
 
 procedure ThrowError(err : Error)
@@ -53,43 +55,46 @@ end
 (* @notice: Allows a `_sender` to update the merkle root from a remote Calendar server *)
 (* @dev   : Access controls are simply if _sender is the set server key *)
 transition updateRoot(new_root: String)
-   
-    (* Access Control  *)
-    permitted = builtin eq _sender authority;
+  (* Access Control  *)
+  current_authority <- authority;
+  match current_authority with
+  | Some auth =>
+    permitted = builtin eq _sender auth;
     match permitted with
-    |False =>
-        (* the attempt to update root was rejected *)
-        err = CodeRootRejected;
-        ThrowError err
-    |True =>
-        (* An updated merkle root can be used to upgrade a proof transparently - there is no need to log past roots *)
-        latestMerkleRoot := new_root;
-
-        e = {_eventname: "RootUpdated"; new_root: new_root};	       
-        event e
+    | False =>
+      (* the attempt to update root was rejected *)
+      err = CodeRootRejected;
+      ThrowError err
+    | True =>
+      (* An updated merkle root can be used to upgrade a proof transparently - there is no need to log past roots *)
+      updatedRoot = Some{String} new_root;
+      latestMerkleRoot := updatedRoot;
+      e = {_eventname: "RootUpdated"; new_root: new_root};	       
+      event e
     end
+  | None =>
+    err = CodeAuthorityNotSet;
+    ThrowError err
+  end 
 end
 
 (* @notice: Allows the `owner` to update the authority key for a remote server *)
 (* @dev   : Access controls are simply if owener is the sender *)
 transition updateAuthorityKey(new_authority: ByStr20)
-    (* Access Control  *)
-    permitted = builtin eq _sender owner;
-    match permitted with
-    |False =>
-        (* the attempt to update the authority key was rejected *)
-        err = CodeNotAuthorized;
-        ThrowError err
-    |True =>
-        (*The authority key was updated*)
-        authority := new_authority;
-
-        e = {_eventname: "Authority Updated"; new_pkey: new_authority};	       
-        event e
-    end
-
-
+  (* Access Control  *)
+  permitted = builtin eq _sender owner;
+  match permitted with
+  | False =>
+    (* the attempt to update the authority key was rejected *)
+    err = CodeNotAuthorized;
+    ThrowError err
+  | True =>
+    (*The authority key was updated*)
+    new_auth = Some {ByStr20} new_authority;
+    authority := new_auth;
+    e = {_eventname: "Authority Updated"; new_pkey: new_authority};	       
+    event e
+  end
 end
-
 
 

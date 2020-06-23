@@ -71,13 +71,16 @@ async def startup():
     logger.add("file_{time}.log")
     logger.info("Service is Spinning Up")
     logger.info("Provisioning auth store...")
-
+    #TODO: Spin up state manangement service
+    
 # Dump the logs if a shutdown is occuring.
 @app.on_event("shutdown")
 async def shutdown():
     # ideally you'd put this backup in a docker volume, S3 or Grafana-compatible store.
     merkle_tree.export()
     logger.info("Service is Shutting Down")
+    # TODO: make one last attempt to anchor the sidetree before shutdown
+
 
 if __name__ == '__main__':
     import uvicorn

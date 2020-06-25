@@ -1,3 +1,4 @@
+from time import sleep
 from Naked.toolshed.shell import muterun_js
 from loguru import logger
 class Chain:
@@ -7,13 +8,25 @@ class Chain:
         Returns:
         True if the js file exited successfully, False otherwise """
         self.block = 0
+
     def anchor(self, root):
-        response = muterun_js('../../chain/py_anchor_root.js',arguments=root)
-        logger.info("Anchoring attempt {block} returned with {resp}" ,block=self.block, resp=response.stdout.)
+        response = muterun_js('../../chain/py_anchor_root.js',root)
+        # sleep(60)
+        logger.info("Anchoring attempt {block} returned with {resp}" ,block=self.block, resp=response.stdout)
+        
         if response.exitcode == 0:
+            logger.info("Anchoring attempt {block} success" ,block=self.block)
             self.block += 1
+            # the command was successful, handle the standard output
+            standard_out = response.stdout
+            print(standard_out)
             return True
         else:
+            # the command failed or the executable was not present, handle the standard error
+            standard_err = str(response.stderr)
+            exit_code = str(response.exitcode)
+            print('Exit Status ' + exit_code + ': ' + standard_err)
+            logger.info("Anchoring attempt {block} failed" ,block=self.block)
             return False
 
 if __name__=='__main__':

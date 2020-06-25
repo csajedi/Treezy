@@ -7,7 +7,7 @@ from walrus import *
 from core.tree import *
 from core.errors import *
 from core.authorizer import *
-
+from core.reactor import *
 # JSON-RPC entrypoint
 api_v1 = jsonrpc.Entrypoint('/api/v1')
 
@@ -15,6 +15,7 @@ api_v1 = jsonrpc.Entrypoint('/api/v1')
 merkle_tree = Tree()
 db = Walrus(host="127.0.0.1", port=6379, db=0)
 auth = Authorizer(db)
+reactor = Reactor(tree=merkle_tree,interval=30)
 
 # RPC Methods
 
@@ -71,7 +72,9 @@ async def startup():
     logger.add("file_{time}.log")
     logger.info("Service is Spinning Up")
     logger.info("Provisioning auth store...")
-    #TODO: Spin up state manangement service
+    #Spin up state manangement service
+    logger.info("starting anchor...")
+    reactor.start()
     
 # Dump the logs if a shutdown is occuring.
 @app.on_event("shutdown")
@@ -79,7 +82,9 @@ async def shutdown():
     # ideally you'd put this backup in a docker volume, S3 or Grafana-compatible store.
     merkle_tree.export()
     logger.info("Service is Shutting Down")
-    # TODO: make one last attempt to anchor the sidetree before shutdown
+    # make one last attempt to anchor the sidetree before shutdown
+    logger.info("stopping anchor...")
+    reactor.stop()
 
 
 if __name__ == '__main__':

@@ -5,10 +5,9 @@ import time
 import re
 
 from pymerkle import MerkleTree
-from fastapi.encoders import jsonable_encoder
 from loguru import logger
 
-from .errors import *
+from errors import *
 
 
 class Tree:
@@ -92,7 +91,7 @@ class Tree:
         except:
             raise ValidationError
 
-    def current_root(self):
+    def get_current_root(self):
         return self.merkle.get_commitment()
 
     def consistency_proof(self, subhash):

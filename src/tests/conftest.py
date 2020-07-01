@@ -1,8 +1,8 @@
 import pytest
 from starlette.testclient import TestClient
 
-from app.main import app
-from core import *
+# from app.main import app
+
 
 @pytest.fixture(scope="module")
 def test_app():

@@ -1,9 +1,8 @@
 """Starlette is a very fast python web framework, so in order to stress-test it effectively we have to use the locust distributed load testing framework ."""
 
-from locust import HttpLocust, TaskSet, SequentialTaskSet, task, between
+from locust import HttpUser, SequentialTaskSet, task, between
 import hashlib
 import math
-
 
 class StamperTaskSet(SequentialTaskSet):
     @task
@@ -40,7 +39,8 @@ class StamperTaskSet(SequentialTaskSet):
                 response.failure("The proof response was an eror")
 
 
-class Stamper(HttpLocust):
+class Stamper(HttpUser):
     # host = 'http://localhost:5000'
-    task_set = StamperTaskSet
-    wait_time = between(0.1, 12)
+    tasks = StamperTaskSet
+    wait_time = between(2, 20)
+

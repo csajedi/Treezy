@@ -1,7 +1,6 @@
 # errors
 import fastapi_jsonrpc as jsonrpc
 
-
 class ChecksumFormatError(jsonrpc.BaseError):
     CODE = 6000
     MESSAGE = "Checksum improperly formed error"
@@ -10,6 +9,11 @@ class ChecksumFormatError(jsonrpc.BaseError):
 class ValidationError(jsonrpc.BaseError):
     CODE = 6001
     MESSAGE = "The proof could not be validated"
+
+class AuthorizationError(jsonrpc.BaseError):
+    CODE = 6002
+    MESSAGE = "The provide API key is not valid"
+
 
 
 class ChecksumNotFoundError(jsonrpc.BaseError):

@@ -8,25 +8,13 @@ services:
       - ./src/:/usr/src/app/
     ports:
       - 8002:8000
+      - 5000:5002
     environment:
       - SERVER_ZILLIQA_KEY="REPLACEME" # DO NOT USE THIS IN PRODUCTION - This should be handled by your secret manager
-  minio:
-    image: minio/minio:RELEASE.2020-03-09T18-26-53Z
-    volumes:
-      - data1-1:/data1
-      - data1-2:/data2
-    ports:
-      - "9001:9000"
-    environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-    command: server http://minio/data{1...2}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
-volumes:
-  data1-1:
-  data1-2:
+    depends_on:
+      - redis
+    deploy:
+      mode: global
+    
+  redis:
+    image: redis

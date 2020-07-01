@@ -1,6 +1,13 @@
 {
+  "scripts": {
+    "test": "tape test/*.test.js |tap-dot"
+  },
   "dependencies": {
     "@zilliqa-js/zilliqa": "^0.10.1",
+    "tape": "^5.0.1",
     "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "tap-dot": "^2.0.0"
   }
 }

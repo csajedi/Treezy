@@ -36,7 +36,7 @@ If you wish to use this service in your existing authenticated infrastructure, t
 
 ## Security
 
-In order to fully secure your service, you need to figure out how to store the private key for this forwarding server. If you are already using Kubernetes, then you probably know what that means. If you have a DevOps team, then you could use [Consul](https://www.consul.io/). This repo provides an example of using Docker Secrets to store this key, in hopes that it will be sufficiently simple for the Zilliqa community to adopt it as a standard practice, replacing the .env files that have been used by the Ethereum community to store keys.
+In order to fully secure your service, you need to figure out how to store the private key for this forwarding server. If you are already using Kubernetes, then you probably know what that means. If you have a DevOps team, then you could use [Consul](https://www.consul.io/). This project uses Docker and Docker swarm, so you could consider using [Docker Secrets](https://www.docker.com/blog/docker-secrets-management/) like we do.
 
 
 run your pytests in the container with `./src/test.sh`

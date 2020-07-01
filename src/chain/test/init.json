@@ -1,0 +1,22 @@
+[
+    {
+        "vname": "_scilla_version",
+        "type": "Uint32",
+        "value": "0"
+    },
+    {
+        "vname": "owner",
+        "type": "ByStr20",
+        "value": "0x501A70ffEAA3F31C1caccE3479e74713546BAA44"
+    },
+    {
+        "type": "BNum",
+        "value": "1494138",
+        "vname": "_creation_block"
+    },
+    {
+        "type": "ByStr20",
+        "value": "0x69277b2ecf69cc6356f57cc057ab5ca7f8910abd",
+        "vname": "_this_address"
+    }
+]

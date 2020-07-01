@@ -1,7 +1,6 @@
 # errors
 import fastapi_jsonrpc as jsonrpc
 
-
 class ChecksumFormatError(jsonrpc.BaseError):
     CODE = 6000
     MESSAGE = "Checksum improperly formed error"

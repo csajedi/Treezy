@@ -1,12 +1,13 @@
-fastapi==0.54.1
+fastapi-jsonrpc==0.2.4
 uvicorn==0.11.5
 pymerkle==2.0.2
-fastapi-jsonrpc==0.2.3
 loguru==0.4.1
 walrus==0.8.0
 redis>=3.0.0
+timeloop>=1.0.2
+Naked>=0.1.31
 
 # dev
 pytest==5.4.2
 requests==2.23.0
-locust==*
+locust==1.0.3

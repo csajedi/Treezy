@@ -1,5 +1,5 @@
 # Treezy: A simple sidetree RPC server for Zilliqa 
-
+![diagram](/docs/DT_Diagram.png)
 There are many cases where a blockchain transaction is not required to achieve the benefit of a public ledger. Zilliqa offers several unique properties that make it a valuable target for a [SideTree protocol](https://github.com/decentralized-identity/sidetree/blob/master/docs/protocol.md) implementation, such as fast finality and cheap transactions. To achieve a practical variant of the Sidetree implementation for the Zilliqa community is a one-off task that could yield value through many forks. We do not concern ourselves with some of the standards compliance components, and our merkle tree implementation was selected for the succint proofs it creates for long-running trees. The sidetree protocol documentation can be used for guidance in future developments, which may include an on-chain proof gadget that allows for arbitrary oracles.
 
 Our SideTree implementation is modified to make full use of PyMerkle's efficient tree encoding strategy. It relies on a Redis Cache to act as the mempool, and is ready to act as the datastructure for a sidechain - just add consensus. 
